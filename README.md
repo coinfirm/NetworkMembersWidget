@@ -28,5 +28,25 @@ data-user-input | Boolean | Allow user to identify himself (can be also made on 
 Reported addresses are stored under specific Network Member profile.
 This is why address reporting MUST BE done by API request.
 
+Endpoint used to report addresses:
+
+```
+https://api.coinfirm.io/v2/panels/nm/reported_address
+```
+Method: `POST`
+
+Payload:
+
+Parameter | Type | Description | Example value
+------------ | ------------- | ------------- | -------------
+address | String | Address to report | 
+address_type | String | Address type | ETH
+rate | Number | Address rate 0 - negative, 1 - neutral, 2 - positive | 0 
+owner (optional) | String | Address owner name | Coinfirm
+description (optional) | String | Some additional info about address | 
+urls (optional) | Object[] | Array of links connected to address | `[ [ "url" => "http://coinfirm.io" ], ... ]`
+files | Object[] | Array of proof files connected to address | `[ [ "base64" => "...", "type" => "image/png" ], ... ]`
+ 
+
 ### Examples
--  [PHP server-side implementation](http://google.com)
+-  [PHP server-side implementation](https://github.com/coinfirm/NetworkMembersWidget/tree/master/examples/php)
