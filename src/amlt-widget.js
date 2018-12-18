@@ -3,7 +3,7 @@
  */
 var widgetWrapper,
     widgetIframe,
-    widgetSrc = 'http://coinfirm.io/network-members/amlt-widget';
+    widgetSrc = 'https://platform.coinfirm.com/network-members/widget';
 
 /**
  * Emit event to parent window
