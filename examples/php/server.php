@@ -30,7 +30,7 @@ function reportAddress($token, $request) {
     }
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,"https://api.coinfirm.io/v2/panels/nm/reported_address");
+    curl_setopt($ch, CURLOPT_URL,"https://api.coinfirm.io/v3/panels/nm/reported_address");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
