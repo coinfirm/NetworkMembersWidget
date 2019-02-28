@@ -1,11 +1,12 @@
 <?php
 
-// Your API token
-$token = 'TOKEN_STRING';
+// Your API configuration
+const API_URL = 'https://api.coinfirm.com/v3/panels/nm/reported_address';
+const API_TOKEN = 'PASTE_YOUR_TOKEN_HERE';
 
-function reportAddress($token, $request) {
+function reportAddress($request) {
     $headers = [
-        "Authorization: Bearer $token",
+        "Authorization: Bearer " . API_TOKEN,
         "Content-Type: application/json"
     ];
     $payload = [
@@ -30,7 +31,7 @@ function reportAddress($token, $request) {
     }
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,"https://api.coinfirm.io/v2/panels/nm/reported_address");
+    curl_setopt($ch, CURLOPT_URL, API_URL);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -52,7 +53,7 @@ function reportAddress($token, $request) {
 
 $json = file_get_contents('php://input');
 $request = json_decode($json, true);
-$response = reportAddress($token, $request);
+$response = reportAddress($request);
 
 header('Content-Type: application/json');
 echo json_encode($response);

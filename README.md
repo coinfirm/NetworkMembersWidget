@@ -1,4 +1,4 @@
-# Network Memebers widget
+# Network Members widget
 
 ## Installation
 Copy content of `dist` directory to your web application scripts and styles. 
@@ -31,7 +31,7 @@ This is why address reporting MUST BE done by API request.
 Endpoint used to report addresses:
 
 ```
-https://api.coinfirm.io/v2/panels/nm/reported_address
+https://api.coinfirm.com/v3/panels/nm/reported_address
 ```
 Method: `POST`
 
