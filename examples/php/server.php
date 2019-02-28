@@ -15,9 +15,9 @@ function reportAddress($request) {
         "rate" => $request['value']['rate'],
         "owner" => $request['value']['sub_user'],
         "description" => '',
-        "urls" => [
-            [ "url" => $request['value']['url'] ? : "http://coinfirm.io" ]
-        ],
+        "urls" => $request['value']['url'] ? [
+            [ "url" => $request['value']['url'] ]
+        ] : null,
         "files" => [
             [
                 "base64" => $request['value']['file'],
