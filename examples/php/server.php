@@ -13,10 +13,10 @@ function reportAddress($request) {
         "address" => $request['value']['address'],
         "address_type" => $request['value']['addressType'],
         "rate" => $request['value']['rate'],
-        "owner" => '',
+        "owner" => $request['value']['sub_user'],
         "description" => '',
         "urls" => [
-            [ "url" => "http://coinfirm.io" ]
+            [ "url" => $request['value']['url'] ? : "http://coinfirm.io" ]
         ],
         "files" => [
             [

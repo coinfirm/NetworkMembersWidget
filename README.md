@@ -44,7 +44,7 @@ address_type | String | Address type | ETH
 rate | Number | Address rate 0 - negative, 1 - neutral, 2 - positive | 0 
 owner (optional) | String | Address owner name | Coinfirm
 description (optional) | String | Some additional info about address | 
-urls (optional) | Object[] | Array of links connected to address | `[ [ "url" => "http://coinfirm.io" ], ... ]`
+urls (optional) | Object[] | Array of links connected to address | `[ [ "url" => "https://coinfirm.com" ], ... ]`
 files | Object[] | Array of proof files connected to address | `[ [ "base64" => "...", "type" => "image/png" ], ... ]`
  
 
