@@ -22,7 +22,10 @@ Add following code to `<head>` of your site:
 Parameter | Type | Description
 ------------ | ------------- | -------------
 data-url | String | URL Address on your backend, used to send widget data trough API  
-data-user-input | Boolean | Allow user to identify himself (can be also made on server-side)
+data-logo* | String | URL Address of your logo  
+data-user-input* | Boolean | Allow user to identify himself (can be also made on server-side)
+
+\* - optional
 
 ### Server-side
 Reported addresses are stored under specific Network Member profile.
@@ -50,3 +53,13 @@ files | Object[] | Array of proof files connected to address | `[ [ "base64" => 
 
 ### Examples
 -  [PHP server-side implementation](https://github.com/coinfirm/NetworkMembersWidget/tree/master/examples/php)
+
+## Development
+Install dependecies
+```
+npm i
+```
+Build and minimize assets before deployment
+```
+npm run build
+```
