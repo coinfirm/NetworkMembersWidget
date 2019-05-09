@@ -1,7 +1,7 @@
 #amlt-widget {
     position: relative;
     width: 400px;
-    height: 200px;
+    height: 324px;
     max-width: 100%;
     margin: 2rem auto;
     overflow: hidden;
@@ -13,7 +13,7 @@
     border: none;
     overflow: hidden;
     width: 400px;
-    height: 250px;
+    height: 324px;
     max-width: 100%;
     transition: height .5s;
 }
