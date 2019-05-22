@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AMLT Widget</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'amlt-widget-icons';
+            src:  url('fonts/amlt-widget-icons.eot?dr0cfd');
+            src:  url('fonts/amlt-widget-icons.eot?dr0cfd#iefix') format('embedded-opentype'),
+            url('fonts/amlt-widget-icons.ttf?dr0cfd') format('truetype'),
+            url('fonts/amlt-widget-icons.woff?dr0cfd') format('woff'),
+            url('fonts/amlt-widget-icons.svg?dr0cfd#amlt-widget-icons') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        [class^="icon-"], [class*=" icon-"] {
+            /* use !important to prevent issues with browser extensions that change fonts */
+            font-family: 'amlt-widget-icons' !important;
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+
+            /* Better Font Rendering =========== */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .icon-pencil:before {
+            content: "\e900";
+        }
+        .icon-success:before {
+            content: "\e901";
+        }
+        .icon-success-light:before {
+            content: "\e902";
+        }
+    </style>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            font-family: 'Lato', sans-serif;
+        }
+        section.steps { padding: 30px; }
+        [data-step] { display: none; }
+        .active[data-step] { display: block; }
+        p { text-align: center; }
+        .title {
+            text-align: center;
+            font-size: 31px;
+            line-height: 31px;
+            font-weight: 300;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 6px;
+            padding-bottom: 23px;
+        }
+        input[type='text'] {
+            text-align: center;
+        }
+        input[type='text'], input[type='email'], textarea {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            height: 40px;
+            padding: .5rem;
+            border: 1px solid #e1e1e1;
+            border-radius: 3px;
+            box-shadow: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: normal;
+            line-height: 1.5;
+            background-color: #f7f7f7;
+            transition: box-shadow 0.5s,border-color 0.25s ease-in-out;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        input[type='file'] {
+            font-size: 14px!important;
+        }
+        fieldset {
+            border: none;
+            padding: 0;
+        }
+        label.full-width {
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 30px;
+
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .flag-list, .custom-category {
+            display: none;
+        }
+        .flag-list {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 1rem;
+            margin-top: 1px;
+            text-align: left;
+        }
+        .flag-list .flag {
+            width: 50%;
+            box-sizing: border-box;
+            display: inline-block;
+            float: left;
+            font-size: 14px;
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        .flag-list .flag.w-100 {
+            width: 100%;
+            display: flex;
+            align-items: baseline;
+        }
+        .flag-list .flag.w-100 label {
+            margin-right: 1rem;
+        }
+        span.form-error{
+            display: none;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #fc4f44;
+            vertical-align: super;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        span.form-error.absolute {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+        button, input[type=file]+label {
+            display: inline-block;
+            vertical-align: middle;
+            font-family: inherit;
+            padding: 8px 18px;
+            -webkit-appearance: none;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            line-height: 1;
+            text-align: center;
+            cursor: pointer;
+            background-color: #1fda89;
+            color: #fefefe;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all .2s !important;
+            outline: none !important;
+        }
+        button:hover, input[type=file]+label:hover {
+            box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.4);
+        }
+        button.grey {
+            background: #fff;
+            border-color: #cccccc;
+            color: #cccccc;
+        }
+        .grey {
+            color: #cccccc;
+        }
+        button:disabled {
+            opacity: .5;
+        }
+        .d-block {
+            display: block !important;
+        }
+        nav {
+            text-align: center;
+            margin-top: 23px;
+        }
+        nav.mt {
+            margin-top: 44px;
+        }
+        .mr {
+            margin-right: 1rem;
+        }
+        .mb-2 {
+            margin-bottom: 20px;
+        }
+        .mb-0 {
+            margin-bottom: 0 !important;
+        }
+
+        /* Check box */
+        label {
+            cursor: pointer;
+        }
+        label > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        label.checkbox > input[type=text] {
+            display: inline-block;
+            width: 180px;
+            height: 25px;
+            margin-left: 10px;
+        }
+        label.checkbox > input[type=checkbox] {
+            visibility: hidden;
+            display:block;
+            height:0;
+            width:0;
+            position:absolute;
+            overflow:hidden;
+        }
+        label.checkbox > span.circle {
+            height: 12px;
+            width: 12px;
+            border: 1px solid grey;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            margin-right: 5px;
+        }
+        .checkbox [type=checkbox]:checked + span.circle:after {
+            content: '';
+            height: 6px;
+            width: 6px;
+            background: #0d057f;
+            display: block;
+            border-radius: 50%;
+            left: 3px;
+            position: absolute;
+            top: 3px;
+        }
+        
+        input[type=file] {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+        input[type=file]+label {
+            margin-bottom: 10px;
+            background-color: #0f069f;
+        }
+
+    </style>
+    <style>
+        .address-stars-container {
+            margin-top: 40px;
+            margin-bottom: 12px;
+            position: relative;
+            display: table;
+            width: 100%;
+        }
+        .address-stars-item {
+            position: relative;
+            width: 33.33%;
+            display: table-cell;
+            box-sizing: border-box;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 10px;
+            vertical-align: middle;
+            line-height: 20px;
+        }
+        .address-stars-item input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .address-stars-item:hover {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .address-stars-item:hover .dot, .address-stars-item.active .dot {
+            width: 16px;
+            height: 16px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .address-stars-item .dot {
+            display: block;
+            z-index: 10;
+            position: relative;
+            margin: 0 auto .5rem;
+            width: 8px;
+            height: 8px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            border: 4px solid;
+            border-radius: 50%;
+            transition: .2s all linear;
+            background: white;
+        }
+        .address-stars-item:not(:last-child):after {
+            content: '';
+            opacity: .3;
+            display: block;
+            position: absolute;
+            height: 1px;
+            background-color: #7c7c7c;
+            top: 14px;
+            left: 50%;
+            right: 0;
+            z-index: 1;
+        }
+        .address-stars-item:not(:first-child):before {
+            content: '';
+            opacity: .3;
+            display: block;
+            position: absolute;
+            height: 1px;
+            background-color: #7c7c7c;
+            top: 14px;
+            left: 0;
+            right: 50%;
+            z-index: 1;
+        }
+        footer {
+            position: relative;
+            display: table;
+            width: 100%;
+            box-sizing: border-box;
+            background: #0745ba;
+            padding: 9px 30px;
+            text-align: right;
+            color: #ffffff;
+        }
+        footer > div {
+            display: table-cell;
+            width: 50%;
+        }
+        footer > div > * {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        footer > div span {
+            font-size: 10px;
+            text-transform: uppercase;
+            padding-right: 8px;
+        }
+        footer > div img, footer > div a {
+            height: 20px
+        }
+        .custom-logo {
+            text-align: left;
+        }
+        .address-stars-item.not-recommended .dot { border-color: #f3226d; }
+        .address-stars-item.not-recommended:hover .dot, .address-stars-item.not-recommended.active .dot { background-color: #f3226d; }
+        .address-stars-item.neutral .dot { border-color: #959595; }
+        .address-stars-item.neutral:hover .dot, .address-stars-item.neutral.active .dot { background-color: #959595; }
+        .address-stars-item.recommended .dot { border-color: #1fda89; }
+        .address-stars-item.recommended:hover .dot, .address-stars-item.recommended.active .dot { background-color: #1fda89; }
+
+        .alert span, .alert a {
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .alert a {
+            color: #afafaf;
+            font-size: 14px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .alert a:hover {
+            color: #909090;
+        }
+        .alert .icon-success, .alert .icon-success-light {
+            font-size: 30px;
+            margin-right: .5rem;
+        }
+        .alert.alert-success {
+            color: #1fda89;
+        }
+        #fileAddedAlert {
+            display: none;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="amlt-widget">
+    <section class="steps">
+        <div class="active" data-step="1">
+            <p class="title mb-2">Report address</p>
+            <input id="address" type="text" placeholder="Bitcoin, Dash or Ethereum address">
+            <span class="form-error absolute">Please specify Bitcoin, Dash or Ethereum address</span>
+
+            <div class="address-stars-container">
+                <label class="address-stars-item not-recommended" onclick="Widget.rate(this, 0)">
+                    <input name="rate" type="radio">
+                    <span class="dot"></span>
+                    High risk
+                </label>
+                <label class="address-stars-item neutral" onclick="Widget.rate(this, 1)">
+                    <input name="rate" type="radio">
+                    <span class="dot"></span>
+                    Neutral
+                </label>
+                <label class="address-stars-item recommended" onclick="Widget.rate(this, 2)">
+                    <input name="rate" type="radio">
+                    <span class="dot"></span>
+                    Recommended
+                </label>
+            </div>
+        </div>
+        <div data-step="2">
+            <div class="flag-list">
+                <p class="title">Address flags</p>
+                <fieldset>
+                    <div class="flag">
+                        <label for="checkbox1" class="checkbox">
+                            <input id="checkbox1" value="1" name="scam_phishing" type="checkbox">
+                            <span class="circle"></span> <span>Scam</span>
+                        </label>
+                    </div>
+                    <div class="flag">
+                        <label for="checkbox2" class="checkbox">
+                            <input id="checkbox2" value="2" name="hack_ransomware" type="checkbox">
+                            <span class="circle"></span> <span>Hack</span>
+                        </label>
+                    </div>
+                    <div class="flag">
+                        <label for="checkbox3" class="checkbox">
+                            <input id="checkbox3" value="3" name="mixer_tumbler" type="checkbox">
+                            <span class="circle"></span> <span>Mixer</span>
+                        </label>
+                    </div>
+                    <div class="flag">
+                        <label for="checkbox4" class="checkbox">
+                            <input id="checkbox4" value="4" name="theft_impersonation" type="checkbox">
+                            <span class="circle"></span> <span>ID theft</span>
+                        </label>
+                    </div>
+                    <div class="flag">
+                        <label for="checkbox5" class="checkbox">
+                            <input id="checkbox5" value="5" name="illegal_products" type="checkbox">
+                            <span class="circle"></span> <span>Illegal activity</span>
+                        </label>
+                    </div>
+                    <div class="flag">
+                        <label for="checkbox6" class="checkbox">
+                            <input id="checkbox6" value="6" name="blackmail" type="checkbox">
+                            <span class="circle"></span> <span>Blackmail</span>
+                        </label>
+                    </div>
+                    <div class="flag w-100 mb-0">
+                        <label for="checkbox9" class="checkbox">
+                            <input id="checkbox9" value="9" name="other" type="checkbox">
+                            <span class="circle"></span> <span>Other</span>
+                            <input type="text" name="other-flag-content" id="other-flag-content">
+                        </label>
+                    </div>
+                </fieldset>
+                <nav class="small">
+                    <button class="grey mr" onclick="Widget.back()">Back</button>
+                    <button onclick="Widget.setFlags()">Next</button>
+                </nav>
+            </div>
+            <div class="custom-category">
+                <p class="title mb-2">Description</p>
+                <fieldset>
+                    <div class="flag w-100">
+                        <label for="category-flag-content" class="full-width">What is it?</label>
+                        <input type="text" name="category-flag-content" id="category-flag-content" placeholder="eg. store/merchant" autocomplete="noautocomplete">
+                        <span id="category-flag-error" class="form-error absolute">You must provide address category</span>
+                    </div>
+                </fieldset>
+                <nav class="mt">
+                    <button class="grey mr" onclick="Widget.back()">Back</button>
+                    <button onclick="Widget.setFlags()">Next</button>
+                </nav>
+            </div>
+
+        </div>
+        <div data-step="3">
+            <p class="title">Provide proof</p>
+            <p id="fileAddedAlert" class="alert alert-success">
+                <span class="icon-success-light"></span>
+                <span>File added</span>
+                <a onclick="Widget.changeProof()"><span class="icon-pencil"></span></a>
+            </p>
+            <input id="proofFile" type="file"><label for="proofFile">+ &nbsp; Add proof</label>
+            <span id="proof-file-error" class="form-error">No file selected</span>
+            <label class="full-width"><span class="mr">URL address of proof</span><span class="grey">(optional)</span></label>
+            <input id="url" type="text" placeholder="URL" autocomplete="noautocomplete">
+            <nav>
+                <button class="grey mr" onclick="Widget.back()">Back</button>
+                <button onclick="Widget.confirmProof()">Next</button>
+            </nav>
+        </div>
+        <div data-step="4">
+            <p class="title mb-2">Confirmation</p>
+            <input id="user-input" type="text" placeholder="Email address">
+            <nav>
+                <button class="grey mr" onclick="Widget.back()">Back</button>
+                <button class="submit" onclick="Widget.submit()">Submit</button>
+            </nav>
+        </div>
+        <div data-step="5">
+            <p class="title mb-2">Success!</p>
+            <p class="alert alert-success">
+                <span class="icon-success-light"></span>
+                <span>Address reported</span>
+            </p>
+            <nav>
+                <button onclick="Widget.reset()">Report another</button>
+            </nav>
+        </div>
+        <div data-step="6">
+            <p class="title mb-2">Error</p>
+            <p class="message"></p>
+            <nav>
+                <button onclick="Widget.go(4)">Try again</button>
+            </nav>
+        </div>
+    </section>
+    <footer>
+        <div class="custom-logo">
+        </div>
+        <div>
+            <span>Powered by</span>
+            <a href="https://www.coinfirm.com/" target="_blank">
+                <img src="./amlt_white.svg" alt="Coinfirm">
+            </a>
+        </div>
+    </footer>
+</div>
+<script src="./wallet-address-validator.min.js"></script>
+<script>
+    // Initial widget state
+    const initialState = {
+        address: '',
+        addressType: '',
+        file: '',
+        fileType: '',
+        url: '',
+        flags: {},
+        sub_user: ''
+    };
+
+    /**
+     * AMLT Widget
+     * @version 1.0.2
+     */
+    const Widget = {
+
+        step: 1,
+
+        data: initialState,
+
+        customLogoContainer: document.querySelector('footer .custom-logo'),
+
+        flagsContainer: document.querySelector('.flag-list'),
+
+        categoryContainer: document.querySelector('.custom-category'),
+
+        includeUserInput: window.location.href.indexOf('user_input=true') !== -1,
+
+        logoUrl: '',
+
+        file: '',
+
+        /**
+         * Emit event to parent window
+         * @param name
+         * @param value
+         */
+        _emitEvent: function(name, value) {
+            const data = { name: name, value: value };
+            window.parent.postMessage(data, "*");
+        },
+
+        /**
+         * Check if address is valid
+         * @param address
+         * @returns {boolean}
+         */
+        _isAddressValid: function(address) {
+            const supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO'];
+            for (let key in supportedCurrencies) {
+                if (WAValidator.validate(address, supportedCurrencies[key]) === true
+                    || WAValidator.validate("0x"+address, supportedCurrencies[key]) === true
+                ) {
+                    Widget.data.addressType = supportedCurrencies[key];
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * Get flag value
+         */
+        _isFlagChecked: function(flagNumber) {
+            const input = Widget.flagsContainer.querySelector(`.flag [value="${flagNumber}"]`);
+            return input ? input.checked : false;
+        },
+
+        /**
+         * Initialize widget
+         */
+        initialize: function() {
+            Widget.address = document.getElementById('address');
+            Widget.fileInput = document.querySelector('[type="file"]');
+
+            Widget.address.addEventListener('input', function() {
+                Widget.address.nextElementSibling.classList.remove('d-block');
+            });
+
+            Widget.fileInput.addEventListener('change', function (e) {
+                var file    = Widget.fileInput.files[0];
+                var reader  = new FileReader();
+
+                Widget.fileInput.nextSibling.style.display = 'none';
+                document.getElementById('proof-file-error').style.display = '';
+                Widget.fileAdded = true;
+
+                document.getElementById('fileAddedAlert').style.display = 'inline-block';
+
+                reader.addEventListener("load", function () {
+                    Widget.file = reader.result;
+                }, false);
+
+                if (file) reader.readAsDataURL(file);
+            });
+
+            if (window.location.href.indexOf('&logo=')) {
+                Widget.logoUrl = window.location.href
+                    .slice(window.location.href.indexOf('&logo=') + 6, window.location.href.length);
+                if (Widget.logoUrl !== 'null') {
+                    Widget.customLogoContainer.innerHTML = '<img src="'+Widget.logoUrl+'">';
+                }
+            }
+
+            window.addEventListener('message', function (event) {
+                if (event.data.hasOwnProperty("name") && event.data.name === 'AMLT_Widget_Error') {
+                    Widget.toggleLoadingState(false);
+                    Widget.error(event.data.value);
+                } else if (event.data.hasOwnProperty("name") && event.data.name === 'AMLT_Widget_Success') {
+                    Widget.toggleLoadingState(false);
+                    Widget.go(5);
+                }
+            });
+
+            if(!Widget.includeUserInput) {
+                document.getElementById('user-input').style.display = 'none';
+            }
+        },
+
+        /**
+         * Change (reset) proof file input
+         */
+        changeProof: function() {
+            Widget.fileAdded = false;
+            Widget.fileInput.value = "";
+            Widget.fileInput.nextSibling.style.display = '';
+            document.getElementById('proof-file-error').style.display = '';
+            document.getElementById('fileAddedAlert').style.display = '';
+        },
+
+        /**
+         * Go to specified step
+         * @param step
+         */
+        go: function(step) {
+            Widget.step = step;
+            const steps = document.querySelectorAll('.amlt-widget [data-step]');
+            for(var i = 0; i < steps.length; i++) {
+                if(step === i + 1) steps[i].classList.add('active');
+                else steps[i].classList.remove('active');
+            }
+
+            let html = document.getElementsByTagName('html')[0];
+            let height = Math.max(document.body.scrollHeight, document.body.offsetHeight, html.offsetHeight);
+            Widget._emitEvent('AMLT_Widget_Resize', height);
+        },
+
+        /**
+         * Back to previous step
+         */
+        back: function() {
+            const target = Math.max(Widget.step - 1, 0);
+            Widget.go(target === 2 && Widget.data.rate > 1 ? 1 : target);
+        },
+
+        /**
+         * Rate an address
+         *  0 - negative
+         *  1 - neutral
+         *  2 - positive
+         *
+         * @param ref
+         * @param rate
+         */
+        rate: function(ref, rate) {
+            if (document.querySelectorAll('.address-stars-item.active').length) {
+                document.querySelectorAll('.address-stars-item.active')[0].classList.remove('active');
+            }
+
+            const address = document.getElementById('address').value;
+            if(!this._isAddressValid(address)) {
+                Widget.address.nextElementSibling.classList.add('d-block');
+                return false;
+            }
+
+            Widget.data.address = address;
+            Widget.data.rate = rate;
+            ref.classList.add('active');
+
+            switch (rate) {
+                case 0:
+                    Widget.flagsContainer.style.display = 'block';
+                    Widget.categoryContainer.style.display = 'none';
+                    Widget.go(2);
+                    break;
+                case 1:
+                case 2:
+                    Widget.flagsContainer.style.display = 'none';
+                    Widget.categoryContainer.style.display = 'block';
+                    Widget.go(2);
+                    break;
+            }
+        },
+
+        /**
+         *  Set address flags / category
+         */
+        setFlags: function() {
+            if (Widget.data.rate !== 0) {
+                var errorElement = document.getElementById('category-flag-error');
+                var category = document.getElementById('category-flag-content').value;
+                if (!category || category.length === 0) {
+                    errorElement.classList.add('d-block');
+                    return false;
+                } else {
+                    errorElement.classList.remove('d-block');
+                }
+            }
+
+            Widget.go(3);
+        },
+
+        /**
+         * Confirm proof
+         */
+        confirmProof: function() {
+            var errorElement = document.getElementById('proof-file-error');
+            if (!Widget.fileAdded) {
+                errorElement.style.display = 'inline-block';
+            } else {
+                errorElement.style.display = 'none';
+                Widget.go(4);
+            }
+        },
+
+        /**
+         * Reset to initial state
+         */
+        reset: function() {
+            Widget.data = initialState;
+            Widget.go(1);
+        },
+
+        /**
+         * Display error message
+         * @param message
+         */
+        error: function(message) {
+            var messageContainer = document.querySelector('[data-step="6"] p.message');
+            messageContainer.innerText = message;
+            Widget.go(6);
+        },
+
+        validate: function() {
+            return true;
+        },
+
+        /**
+         * Submit form
+         */
+        submit: function() {
+            if (!this.validate()) {
+                return;
+            }
+
+            Widget.toggleLoadingState(true);
+
+            Widget.data.flags = [];
+
+            switch (Widget.data.rate) {
+                case 0:
+                    for (let i = 1; i <= 9; i++) {
+                        if (Widget._isFlagChecked(i)) {
+                            Widget.data.flags.push({
+                                flag: i,
+                                descr: i === 9 ? document.getElementById('other-flag-content').value : ''
+                            });
+                        }
+                    }
+                    break;
+
+                case 1:
+                case 2:
+                    Widget.data.flags.push({
+                        flag: 10,
+                        descr: document.getElementById('category-flag-content').value
+                    });
+                    break;
+            }
+
+            if (Widget.file) {
+                const file = Widget.file.split(';');
+                Widget.data.file = file[1].split(',')[1];
+                Widget.data.fileType = file[0].split(':')[1];
+            }
+
+            if (Widget.includeUserInput) {
+                Widget.data.sub_user = document.getElementById('user-input').value;
+            }
+
+            Widget.data.url = document.getElementById('url').value;
+
+            Widget._emitEvent('AMLT_Widget_Submit', Widget.data);
+        },
+
+        toggleLoadingState: function(loading) {
+            const backButtons = document.querySelectorAll('button.grey');
+            const submitButton = document.querySelector('button.submit');
+            if (loading) {
+                backButtons.forEach(function (button) {
+                    button.disabled = true;
+                });
+                submitButton.disabled = true;
+                submitButton.innerText = 'Loading...';
+            } else {
+                backButtons.forEach(function (button) {
+                    button.disabled = false;
+                });
+                submitButton.disabled = false;
+                submitButton.innerText = 'Submit';
+            }
+        }
+    };
+
+    Widget.initialize();
+</script>
+</body>
+</html>
