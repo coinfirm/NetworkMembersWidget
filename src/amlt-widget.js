@@ -5,7 +5,7 @@ import './amlt-widget.css';
  */
 var widgetWrapper,
     widgetIframe,
-    widgetSrc = 'https://platform.coinfirm.com/network-members/widget';
+    widgetSrc = 'https://widget.coinfirm.com/widget/frame';
 
 /**
  * Emit event to parent window
