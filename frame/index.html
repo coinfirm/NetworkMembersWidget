@@ -397,8 +397,8 @@
     <section class="steps">
         <div class="active" data-step="1">
             <p class="title mb-2">Report address</p>
-            <input id="address" type="text" placeholder="Bitcoin, Dash or Ethereum address">
-            <span class="form-error absolute">Please specify Bitcoin, Dash or Ethereum address</span>
+            <input id="address" type="text" placeholder="BTC, ETH, DASH, NEO or LTC address">
+            <span class="form-error absolute">Please specify BTC, ETH, DASH, NEO or LTC address</span>
 
             <div class="address-stars-container">
                 <label class="address-stars-item not-recommended" onclick="Widget.rate(this, 0)">
@@ -591,7 +591,7 @@
          * @returns {boolean}
          */
         _isAddressValid: function(address) {
-            const supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO'];
+            const supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO', 'LTC'];
             for (let key in supportedCurrencies) {
                 if (WAValidator.validate(address, supportedCurrencies[key]) === true
                     || WAValidator.validate("0x"+address, supportedCurrencies[key]) === true
