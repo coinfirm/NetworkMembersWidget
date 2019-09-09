@@ -20,12 +20,19 @@ function emitEvent(name, value) {
 /**
  *  Initialize widget
  */
-function initialize() {
+function initialize(options) {
     widgetWrapper = document.getElementById('amlt-widget');
     var includeUserInput = widgetWrapper.getAttribute('data-user-input') === 'true';
     var logoUrl = widgetWrapper.getAttribute('data-logo');
     widgetIframe = document.createElement('iframe');
-    widgetIframe.src =  widgetSrc + '?user_input='+includeUserInput+'&logo='+logoUrl;
+
+    var frameUrl = widgetSrc + '?user_input='+includeUserInput+'&logo=' + logoUrl;
+
+    if (options && options.style) {
+        frameUrl += '&styles=' + encodeURIComponent(JSON.stringify(options.style));
+    }
+
+    widgetIframe.src = frameUrl;
     widgetIframe.scrolling = 'no';
     widgetIframe.style.display = 'none';
     widgetIframe.onload = function() {
@@ -80,8 +87,12 @@ window.addEventListener('message', function (event) {
 /**
  *  Initialize widget
  */
-if (document.readyState !== 'loading') {
-    initialize();
-} else {
-    document.addEventListener('DOMContentLoaded', initialize);
-}
+window.amltWidget = function(options) {
+    if (document.readyState !== 'loading') {
+        initialize(options);
+    } else {
+        document.addEventListener('DOMContentLoaded', function () {
+            initialize(options);
+        });
+    }
+};

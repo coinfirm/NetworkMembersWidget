@@ -10,6 +10,9 @@ Add following code to `<head>` of your site:
 ```html
 <link rel="stylesheet" href="path/to/amlt-widget.css">
 <script src="path/to/amlt-widget.js"></script>
+<script>
+    amltWidget();
+</script>
 ```
 
 ```html
@@ -50,6 +53,29 @@ description (optional) | String | Some additional info about address |
 urls (optional) | Object[] | Array of links connected to address | `[ [ "url" => "https://coinfirm.com" ], ... ]`
 files | Object[] | Array of proof files connected to address | `[ [ "base64" => "...", "type" => "image/png" ], ... ]`
  
+
+### Customization
+To customize widget style pass options object with `style` property to widget initialization function.
+Currently supported customization options:
+```
+<script>
+    amltWidget({
+        style: {
+            fontColor: '#fff',
+            bgColor: '#040a0f',
+            footerBgColor: '#142a42',
+            successColor: '#6edf2e',
+            neutralColor: '#a0adbe',
+            dangerColor: '#f24226',
+            inputFontColor: '#fff',
+            inputBgColor: '#040a0f',
+            inputBorderStyle: 'bottom', // or full (default)
+            inputBorderColor: '#37404a',
+            buttonFontColor: '#404040'
+        }
+    });
+</script>
+```
 
 ### Examples
 -  [PHP server-side implementation](https://github.com/coinfirm/NetworkMembersWidget/tree/master/examples/php)
