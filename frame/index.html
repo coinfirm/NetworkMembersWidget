@@ -37,9 +37,6 @@
         .icon-pencil:before {
             content: "\e900";
         }
-        .icon-success:before {
-            content: "\e901";
-        }
         .icon-success-light:before {
             content: "\e902";
         }
@@ -294,15 +291,13 @@
             display: block;
             z-index: 10;
             position: relative;
-            margin: 0 auto .5rem;
             width: 8px;
             height: 8px;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            margin: 8px auto;
             border: 4px solid;
             border-radius: 50%;
             transition: .2s all linear;
-            background: white;
+            background-color: white;
         }
         .address-stars-item:not(:last-child):after {
             content: '';
@@ -397,7 +392,7 @@
     <section class="steps">
         <div class="active" data-step="1">
             <p class="title mb-2">Report address</p>
-            <input id="address" type="text" placeholder="BTC, ETH, DASH, NEO or LTC address">
+            <input id="address" type="text" placeholder="BTC, ETH, DASH, NEO or LTC address" autocomplete="off">
             <span class="form-error absolute">Please specify BTC, ETH, DASH, NEO or LTC address</span>
 
             <div class="address-stars-container">
@@ -542,8 +537,53 @@
 </div>
 <script src="./wallet-address-validator.min.js"></script>
 <script>
+    if(typeof document.createStyleSheet === 'undefined') {
+        document.createStyleSheet = (function() {
+            function createStyleSheet(href) {
+                if(typeof href !== 'undefined') {
+                    var element = document.createElement('link');
+                    element.type = 'text/css';
+                    element.rel = 'stylesheet';
+                    element.href = href;
+                }
+                else {
+                    var element = document.createElement('style');
+                    element.type = 'text/css';
+                }
+
+                document.getElementsByTagName('head')[0].appendChild(element);
+                var sheet = document.styleSheets[document.styleSheets.length - 1];
+
+                if(typeof sheet.addRule === 'undefined')
+                    sheet.addRule = addRule;
+
+                if(typeof sheet.removeRule === 'undefined')
+                    sheet.removeRule = sheet.deleteRule;
+
+                return sheet;
+            }
+
+            function addRule(selectorText, cssText, index) {
+                if(typeof index === 'undefined')
+                    index = this.cssRules.length;
+
+                this.insertRule(selectorText + ' {' + cssText + '}', index);
+            }
+
+            return createStyleSheet;
+        })();
+    }
+</script>
+<script>
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
     // Initial widget state
-    const initialState = {
+    var initialState = {
         address: '',
         addressType: '',
         file: '',
@@ -557,7 +597,7 @@
      * AMLT Widget
      * @version 1.0.2
      */
-    const Widget = {
+    var Widget = {
 
         step: 1,
 
@@ -571,8 +611,6 @@
 
         includeUserInput: window.location.href.indexOf('user_input=true') !== -1,
 
-        logoUrl: '',
-
         file: '',
 
         /**
@@ -581,7 +619,7 @@
          * @param value
          */
         _emitEvent: function(name, value) {
-            const data = { name: name, value: value };
+            var data = { name: name, value: value };
             window.parent.postMessage(data, "*");
         },
 
@@ -591,8 +629,8 @@
          * @returns {boolean}
          */
         _isAddressValid: function(address) {
-            const supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO', 'LTC'];
-            for (let key in supportedCurrencies) {
+            var supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO', 'LTC'];
+            for (var key in supportedCurrencies) {
                 if (WAValidator.validate(address, supportedCurrencies[key]) === true
                     || WAValidator.validate("0x"+address, supportedCurrencies[key]) === true
                 ) {
@@ -607,7 +645,7 @@
          * Get flag value
          */
         _isFlagChecked: function(flagNumber) {
-            const input = Widget.flagsContainer.querySelector(`.flag [value="${flagNumber}"]`);
+            var input = Widget.flagsContainer.querySelector('.flag [value="' + flagNumber + '"]');
             return input ? input.checked : false;
         },
 
@@ -615,6 +653,17 @@
          * Initialize widget
          */
         initialize: function() {
+            var logoUrl = getUrlParameter('logo');
+            var styles = getUrlParameter('styles');
+
+            if (styles && styles !== 'null') {
+                Widget.applyStyles(styles);
+            }
+
+            if (logoUrl && logoUrl !== 'null') {
+                Widget.customLogoContainer.innerHTML = '<img src="'+logoUrl+'">';
+            }
+
             Widget.address = document.getElementById('address');
             Widget.fileInput = document.querySelector('[type="file"]');
 
@@ -639,14 +688,6 @@
                 if (file) reader.readAsDataURL(file);
             });
 
-            if (window.location.href.indexOf('&logo=')) {
-                Widget.logoUrl = window.location.href
-                    .slice(window.location.href.indexOf('&logo=') + 6, window.location.href.length);
-                if (Widget.logoUrl !== 'null') {
-                    Widget.customLogoContainer.innerHTML = '<img src="'+Widget.logoUrl+'">';
-                }
-            }
-
             window.addEventListener('message', function (event) {
                 if (event.data.hasOwnProperty("name") && event.data.name === 'AMLT_Widget_Error') {
                     Widget.toggleLoadingState(false);
@@ -659,6 +700,78 @@
 
             if(!Widget.includeUserInput) {
                 document.getElementById('user-input').style.display = 'none';
+            }
+        },
+
+        /**
+         * Apply styles from styles json
+         */
+        applyStyles: function(stylesJson) {
+            try {
+                var styles = JSON.parse(stylesJson);
+                var sheet = document.createStyleSheet();
+
+                Object.keys(styles).forEach(function(key) {
+                    if (!styles.hasOwnProperty(key)) {
+                        return;
+                    }
+
+                    switch (key) {
+                        case 'fontColor':
+                            sheet.addRule('body', 'color: '+ styles[key] +';');
+                            break;
+                        case 'bgColor':
+                            sheet.addRule('body, html', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item .dot', 'background-color: '+ styles[key] +';');
+                            break;
+                        case 'footerBgColor':
+                            sheet.addRule('footer', 'background-color: '+ styles[key] +';');
+                            break;
+                        case 'successColor':
+                            sheet.addRule('.address-stars-item.recommended .dot', 'border-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.recommended:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.recommended.active .dot', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('button, input[type=file]+label', 'background-color: '+ styles[key] +';');
+                            break;
+                        case 'neutralColor':
+                            sheet.addRule('.address-stars-item.neutral .dot', 'border-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.neutral:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.neutral.active .dot', 'background-color: '+ styles[key] +';');
+                            break;
+                        case 'dangerColor':
+                            sheet.addRule('.address-stars-item.not-recommended .dot', 'border-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.not-recommended:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item.not-recommended.active .dot', 'background-color: '+ styles[key] +';');
+                            break;
+                        case 'buttonFontColor':
+                            sheet.addRule('button', 'color: '+ styles[key] +'!important;');
+                            break;
+                        case 'inputFontColor':
+                            sheet.addRule('input[type="text"], input[type="email"], textarea', 'color: '+ styles[key] +';');
+                            break;
+                        case 'inputBgColor':
+                            sheet.addRule('input[type="text"], input[type="email"], textarea', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('input:-webkit-autofill', '-webkit-text-fill-color: '+ styles[key] +'!important;');
+                            sheet.addRule('input:-webkit-autofill', 'background-color: '+ styles[key] +'!important;');
+                            break;
+                        case 'inputBorderStyle':
+                            if (styles[key] === 'bottom') {
+                                sheet.addRule('input[type="text"], input[type="email"], textarea', 'border-top: none;');
+                                sheet.addRule('input[type="text"], input[type="email"], textarea', 'border-left: none;');
+                                sheet.addRule('input[type="text"], input[type="email"], textarea', 'border-right: none;');
+                            }
+                            break;
+                        case 'inputBorderColor':
+                            sheet.addRule('input[type="text"], input[type="email"], textarea', 'border-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item:not(:last-child):after', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item:not(:first-child):before', 'background-color: '+ styles[key] +';');
+                            sheet.addRule('.address-stars-item:not(:last-child):after', 'opacity: 1;');
+                            sheet.addRule('.address-stars-item:not(:first-child):before', 'opacity: 1;');
+                            break;
+                    }
+                });
+            } catch (e) {
+                console.error('Failed to encode styles json');
             }
         },
 
@@ -679,14 +792,14 @@
          */
         go: function(step) {
             Widget.step = step;
-            const steps = document.querySelectorAll('.amlt-widget [data-step]');
+            var steps = document.querySelectorAll('.amlt-widget [data-step]');
             for(var i = 0; i < steps.length; i++) {
                 if(step === i + 1) steps[i].classList.add('active');
                 else steps[i].classList.remove('active');
             }
 
-            let html = document.getElementsByTagName('html')[0];
-            let height = Math.max(document.body.scrollHeight, document.body.offsetHeight, html.offsetHeight);
+            var html = document.getElementsByTagName('html')[0];
+            var height = Math.max(document.body.scrollHeight, document.body.offsetHeight, html.offsetHeight);
             Widget._emitEvent('AMLT_Widget_Resize', height);
         },
 
@@ -694,7 +807,7 @@
          * Back to previous step
          */
         back: function() {
-            const target = Math.max(Widget.step - 1, 0);
+            var target = Math.max(Widget.step - 1, 0);
             Widget.go(target === 2 && Widget.data.rate > 1 ? 1 : target);
         },
 
@@ -712,7 +825,7 @@
                 document.querySelectorAll('.address-stars-item.active')[0].classList.remove('active');
             }
 
-            const address = document.getElementById('address').value;
+            var address = document.getElementById('address').value;
             if(!this._isAddressValid(address)) {
                 Widget.address.nextElementSibling.classList.add('d-block');
                 return false;
@@ -804,7 +917,7 @@
 
             switch (Widget.data.rate) {
                 case 0:
-                    for (let i = 1; i <= 9; i++) {
+                    for (var i = 1; i <= 9; i++) {
                         if (Widget._isFlagChecked(i)) {
                             Widget.data.flags.push({
                                 flag: i,
@@ -824,7 +937,7 @@
             }
 
             if (Widget.file) {
-                const file = Widget.file.split(';');
+                var file = Widget.file.split(';');
                 Widget.data.file = file[1].split(',')[1];
                 Widget.data.fileType = file[0].split(':')[1];
             }
@@ -839,8 +952,8 @@
         },
 
         toggleLoadingState: function(loading) {
-            const backButtons = document.querySelectorAll('button.grey');
-            const submitButton = document.querySelector('button.submit');
+            var backButtons = document.querySelectorAll('button.grey');
+            var submitButton = document.querySelector('button.submit');
             if (loading) {
                 backButtons.forEach(function (button) {
                     button.disabled = true;
