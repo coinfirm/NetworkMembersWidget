@@ -629,7 +629,7 @@
          * @returns {boolean}
          */
         _isAddressValid: function(address) {
-            var supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO', 'LTC'];
+            var supportedCurrencies = ['BTC', 'ETH', 'DASH', 'NEO', 'LTC', 'XRP'];
             for (var key in supportedCurrencies) {
                 if (WAValidator.validate(address, supportedCurrencies[key]) === true
                     || WAValidator.validate("0x"+address, supportedCurrencies[key]) === true
