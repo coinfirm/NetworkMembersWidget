@@ -32,6 +32,10 @@ function initialize(options) {
         frameUrl += '&styles=' + encodeURIComponent(JSON.stringify(options.style));
     }
 
+    if (options && options.font) {
+        frameUrl += '&font=' + encodeURIComponent(JSON.stringify(options.font));
+    }
+
     widgetIframe.src = frameUrl;
     widgetIframe.scrolling = 'no';
     widgetIframe.style.display = 'none';

@@ -55,11 +55,14 @@ files | Object[] | Array of proof files connected to address | `[ [ "base64" => 
  
 
 ### Customization
-To customize widget style pass options object with `style` property to widget initialization function.
+To customize widget pass options object to widget initialization function.
 Currently supported customization options:
 ```
 <script>
     amltWidget({
+        font: {
+            name: 'Roboto Mono' // Font name from google fonts
+        },
         style: {
             fontColor: '#fff',
             bgColor: '#040a0f',
@@ -81,7 +84,7 @@ Currently supported customization options:
 -  [PHP server-side implementation](https://github.com/coinfirm/NetworkMembersWidget/tree/master/examples/php)
 
 ## Development
-Install dependecies
+Install dependencies
 ```
 npm i
 ```

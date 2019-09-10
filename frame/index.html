@@ -655,9 +655,14 @@
         initialize: function() {
             var logoUrl = getUrlParameter('logo');
             var styles = getUrlParameter('styles');
+            var font = getUrlParameter('font');
 
             if (styles && styles !== 'null') {
                 Widget.applyStyles(styles);
+            }
+
+            if (font && font !== 'null') {
+                Widget.applyFont(font);
             }
 
             if (logoUrl && logoUrl !== 'null') {
@@ -771,7 +776,23 @@
                     }
                 });
             } catch (e) {
-                console.error('Failed to encode styles json');
+                console.error('Failed to decode and parse styles json');
+            }
+        },
+
+        /**
+         * Apply fonts from font json
+         */
+        applyFont: function(fontJson) {
+            try {
+                var font = JSON.parse(fontJson);
+                var link = document.createElement('link');
+                link.setAttribute('rel', 'stylesheet');
+                link.setAttribute('href', 'https://fonts.googleapis.com/css?family=' + font.name.replace(/ /g, '+'));
+                document.head.appendChild(link);
+                document.body.style.fontFamily = font.name;
+            } catch (e) {
+                console.error('Failed to decode and parse font json');
             }
         },
 
