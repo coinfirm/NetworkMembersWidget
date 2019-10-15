@@ -284,7 +284,15 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .address-stars-item:hover .dot, .address-stars-item.active .dot {
+        @media (hover: hover) {
+            .address-stars-item:hover .dot {
+                width: 16px;
+                height: 16px;
+                margin-top: 4px;
+                margin-bottom: 4px;
+            }
+        }
+        .address-stars-item.active .dot {
             width: 16px;
             height: 16px;
             margin-top: 4px;
@@ -355,12 +363,17 @@
         .custom-logo {
             text-align: left;
         }
+        @media (hover: hover) {
+            .address-stars-item.not-recommended:hover .dot { background-color: #f3226d; }
+            .address-stars-item.neutral:hover .dot { background-color: #959595; }
+            .address-stars-item.recommended:hover .dot { background-color: #1fda89; }
+        }
         .address-stars-item.not-recommended .dot { border-color: #f3226d; }
-        .address-stars-item.not-recommended:hover .dot, .address-stars-item.not-recommended.active .dot { background-color: #f3226d; }
+        .address-stars-item.not-recommended.active .dot { background-color: #f3226d; }
         .address-stars-item.neutral .dot { border-color: #959595; }
-        .address-stars-item.neutral:hover .dot, .address-stars-item.neutral.active .dot { background-color: #959595; }
+        .address-stars-item.neutral.active .dot { background-color: #959595; }
         .address-stars-item.recommended .dot { border-color: #1fda89; }
-        .address-stars-item.recommended:hover .dot, .address-stars-item.recommended.active .dot { background-color: #1fda89; }
+        .address-stars-item.recommended.active .dot { background-color: #1fda89; }
 
         .alert span, .alert a {
             vertical-align: middle;
@@ -399,17 +412,17 @@
             <span class="form-error absolute">Please specify BTC, ETH, DASH, NEO or LTC address</span>
 
             <div class="address-stars-container">
-                <label class="address-stars-item not-recommended" onclick="Widget.rate(this, 0)">
+                <label class="address-stars-item not-recommended" onclick="Widget.rate(this, 0, event)">
                     <input name="rate" type="radio">
                     <span class="dot"></span>
                     High risk
                 </label>
-                <label class="address-stars-item neutral" onclick="Widget.rate(this, 1)">
+                <label class="address-stars-item neutral" onclick="Widget.rate(this, 1, event)">
                     <input name="rate" type="radio">
                     <span class="dot"></span>
                     Neutral
                 </label>
-                <label class="address-stars-item recommended" onclick="Widget.rate(this, 2)">
+                <label class="address-stars-item recommended" onclick="Widget.rate(this, 2, event)">
                     <input name="rate" type="radio">
                     <span class="dot"></span>
                     Recommended
@@ -843,8 +856,12 @@
          *
          * @param ref
          * @param rate
+         * @param e
          */
-        rate: function(ref, rate) {
+        rate: function(ref, rate, e) {
+            e.stopPropagation();
+            e.preventDefault();
+
             if (document.querySelectorAll('.address-stars-item.active').length) {
                 document.querySelectorAll('.address-stars-item.active')[0].classList.remove('active');
             }
