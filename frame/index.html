@@ -750,18 +750,18 @@
                             break;
                         case 'successColor':
                             sheet.addRule('.address-stars-item.recommended .dot', 'border-color: '+ styles[key] +';');
-                            sheet.addRule('.address-stars-item.recommended:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.insertRule('@media (hover: hover) { .address-stars-item.recommended:hover .dot { background-color: '+ styles[key] +'; } }');
                             sheet.addRule('.address-stars-item.recommended.active .dot', 'background-color: '+ styles[key] +';');
                             sheet.addRule('button, input[type=file]+label', 'background-color: '+ styles[key] +';');
                             break;
                         case 'neutralColor':
                             sheet.addRule('.address-stars-item.neutral .dot', 'border-color: '+ styles[key] +';');
-                            sheet.addRule('.address-stars-item.neutral:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.insertRule('@media (hover: hover) { .address-stars-item.neutral:hover .dot { background-color: '+ styles[key] +'; } }');
                             sheet.addRule('.address-stars-item.neutral.active .dot', 'background-color: '+ styles[key] +';');
                             break;
                         case 'dangerColor':
                             sheet.addRule('.address-stars-item.not-recommended .dot', 'border-color: '+ styles[key] +';');
-                            sheet.addRule('.address-stars-item.not-recommended:hover .dot', 'background-color: '+ styles[key] +';');
+                            sheet.insertRule('@media (hover: hover) { .address-stars-item.not-recommended:hover .dot { background-color: '+ styles[key] +'; } }');
                             sheet.addRule('.address-stars-item.not-recommended.active .dot', 'background-color: '+ styles[key] +';');
                             break;
                         case 'buttonFontColor':
@@ -772,8 +772,12 @@
                             break;
                         case 'inputBgColor':
                             sheet.addRule('input[type="text"], input[type="email"], textarea', 'background-color: '+ styles[key] +';');
-                            sheet.addRule('input:-webkit-autofill', '-webkit-text-fill-color: '+ styles[key] +'!important;');
-                            sheet.addRule('input:-webkit-autofill', 'background-color: '+ styles[key] +'!important;');
+                            try {
+                                sheet.addRule('input:-webkit-autofill', '-webkit-text-fill-color: ' + styles[key] + '!important;');
+                                sheet.addRule('input:-webkit-autofill', 'background-color: ' + styles[key] + '!important;');
+                            } catch (e) {
+                                // skip - chrome only
+                            }
                             break;
                         case 'inputBorderStyle':
                             if (styles[key] === 'bottom') {
